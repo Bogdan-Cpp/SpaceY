@@ -1,9 +1,27 @@
 #include <SDL.h>
 #include <stdio.h>
+#include <SDL_image.h>
+#include <stdbool.h>
+#include "../include/input.h"
+#include "../include/game.h"
+
+float width = 1200.f;
+float heith = 800.f;
+
+bool leftCollision(float *poz_X);
+bool rightCollision(float *poz_X);
 
 int main(int argc, char* argv[]) {
+    bool isCollision = false;
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Eroare la inițializarea SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
+        printf("ERROR to SDL_image: %s\n", IMG_GetError());
+        SDL_Quit();
         return 1;
     }
 
@@ -11,8 +29,8 @@ int main(int argc, char* argv[]) {
         "SpaceY",           
         SDL_WINDOWPOS_CENTERED,           
         SDL_WINDOWPOS_CENTERED,           
-        800, 600,                         
-        SDL_WINDOW_SHOWN                  
+        width, heith,                         
+        SDL_WINDOW_SHOWN                 
     );
 
     if (!window) {
@@ -28,41 +46,22 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
-
+    
     SDL_Event e;
-    int ruleaza = 1;
-    float poz_X = 200;
-    float poz_Y = 300;
+    int runing = 1;
+    float poz_X = width / 2;
+    float poz_Y = heith / 2;
 
-    while (ruleaza) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                ruleaza = 0;
-            }
-            if(e.key.keysym.sym){
-                switch(e.key.keysym.sym){
-                    case SDLK_d:
-                      poz_X += 100 * 0.5;
-                      break;
-                    
-                    case SDLK_a:
-                      poz_X -= 100 * 0.5;
-                      break;
-                }
-            }
-        }
+    SDL_Texture* rocket_img = IMG_LoadTexture(renderer, "../assets/rocket.png");
+    if(!rocket_img){
+        return -1;
+    }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-        
-        //cub
-        SDL_Rect cube = {poz_X, poz_Y, 100, 100};
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_RenderFillRect(renderer, &cube);
-        
-        SDL_RenderPresent(renderer);
+    while (runing) {
+        Input(&e, &runing, &poz_X, &poz_Y);
+        gameWindowInit(renderer);
 
-        SDL_Delay(16); 
+        gameDraw(renderer, rocket_img, &poz_X, &poz_Y);        
     }
 
     SDL_DestroyRenderer(renderer);
