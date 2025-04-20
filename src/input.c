@@ -45,6 +45,7 @@ void menuInput(SDL_Event *e, int *runing, int *stage, int *option, int *option_a
                 case SDLK_RETURN:
                     if(*option == 1){*stage = 2;}
                     else if(*option == 3){*stage = 3;}
+                    else if(*option == 2){*stage = 4;}
                     break;
 
                 case SDLK_DOWN:
@@ -92,6 +93,22 @@ void menuInput(SDL_Event *e, int *runing, int *stage, int *option, int *option_a
 }
 
 void settingsInput(SDL_Event *e, int *runing, int *stage){
+    while (SDL_PollEvent(e)) {
+        if (e->type == SDL_QUIT) {
+            *runing = 0;
+        }
+        
+        if(e->key.keysym.sym){
+            switch(e->key.keysym.sym){
+                case SDLK_ESCAPE:
+                    *stage = 1;
+                    break;
+            }
+        }
+    }
+}
+
+void infoInput(SDL_Event *e, int *runing, int *stage){
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
             *runing = 0;

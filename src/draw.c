@@ -83,6 +83,11 @@ void settingsDraw(SDL_Renderer *renderer){
     SDL_Delay(16);
 }
 
+void infoDraw(SDL_Renderer *renderer){
+    SDL_RenderPresent(renderer);
+    SDL_Delay(16);
+}
+
 void gameWindowInit(SDL_Renderer *renderer){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);

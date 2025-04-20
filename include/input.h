@@ -8,6 +8,8 @@ void menuInput(SDL_Event *e, int *runing, int *stage, int *option, int *option_a
 
 void settingsInput(SDL_Event *e, int *runing, int *stage);
 
+void infoInput(SDL_Event *e, int *runing, int *stage);
+
 bool leftCollision(float *poz_X);
 
 bool rightCollision(float *poz_X);

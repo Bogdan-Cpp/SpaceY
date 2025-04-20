@@ -89,6 +89,10 @@ int main(int argc, char* argv[]) {
             case 3:
                 inSettings(renderer, &e, &runing, &stage);
                 break;
+            
+            case 4:
+                inInfo(renderer, &e, &runing, &stage);
+                break;
         }                
     }
 

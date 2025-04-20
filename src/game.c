@@ -32,3 +32,10 @@ void inSettings(SDL_Renderer *renderer, SDL_Event *e, int *runing, int *stage){
     gameWindowInit(renderer);
     settingsDraw(renderer);
 }
+
+void inInfo(SDL_Renderer *renderer, SDL_Event *e, int *runing, int *stage){
+    infoInput(e, runing, stage);
+
+    gameWindowInit(renderer);
+    infoDraw(renderer);
+}
