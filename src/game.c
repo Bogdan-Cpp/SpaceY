@@ -1,20 +1,31 @@
 #include <SDL.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <SDL_image.h>
+#include <stdlib.h>
 #include "../include/game.h"
+#include "../include/input.h"
+#include "../include/draw.h"
 
-void gameWindowInit(SDL_Renderer *renderer){
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
+void inGame(SDL_Event *e, SDL_Renderer *renderer, SDL_Texture *rocket_img, SDL_Texture *mars_img,
+    int *runing, float *poz_X, float *poz_Y, int *stage){
+    
+    gameInput(e, runing, poz_X, poz_Y, stage);
+
+    gameWindowInit(renderer);
+    gameDraw(renderer, rocket_img, mars_img, poz_X, poz_Y);
 }
 
-void gameDraw(SDL_Renderer *renderer, SDL_Texture *rocket_img, float *poz_X, float *poz_Y){
-    int win_X;
-    int win_Y;
+void inMenu(SDL_Renderer *renderer, SDL_Event *e, int *runing, int *stage){
+    menuInput(e, runing, stage);
 
-    SDL_Rect rocket_rect = {*poz_X, *poz_Y, 80, 100};
-    SDL_RenderCopy(renderer, rocket_img, NULL, &rocket_rect);
-        
-    SDL_RenderPresent(renderer);
+    gameWindowInit(renderer);
+    menuDraw(renderer);
+}
 
-    SDL_Delay(16); 
+void inSettings(SDL_Renderer *renderer, SDL_Event *e, int *runing, int *stage){
+    settingsInput(e, runing, stage);
+
+    gameWindowInit(renderer);
+    settingsDraw(renderer);
 }

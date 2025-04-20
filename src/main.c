@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <SDL_image.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "../include/input.h"
 #include "../include/game.h"
 
@@ -51,17 +52,28 @@ int main(int argc, char* argv[]) {
     int runing = 1;
     float poz_X = width / 2;
     float poz_Y = heith / 2;
+    int stage = 1;
 
-    SDL_Texture* rocket_img = IMG_LoadTexture(renderer, "../assets/rocket.png");
-    if(!rocket_img){
-        return -1;
-    }
+    SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket.png");
+    SDL_Texture *mars_img = IMG_LoadTexture(renderer, "../assets/mars.png");
+    
+    if(!rocket_img){return -1;}
+    if(!mars_img){return -1;}
 
     while (runing) {
-        Input(&e, &runing, &poz_X, &poz_Y);
-        gameWindowInit(renderer);
+        switch(stage){
+            case 1:
+                inMenu(renderer, &e, &runing, &stage);
+                break;
 
-        gameDraw(renderer, rocket_img, &poz_X, &poz_Y);        
+            case 2:
+                inGame(&e, renderer, rocket_img, mars_img, &runing, &poz_X, &poz_Y, &stage);
+                break;
+
+            case 3:
+                inSettings(renderer, &e, &runing, &stage);
+                break;
+        }                
     }
 
     SDL_DestroyRenderer(renderer);
