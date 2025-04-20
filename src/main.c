@@ -66,6 +66,9 @@ int main(int argc, char* argv[]) {
 
     SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket.png");
     SDL_Texture *mars_img = IMG_LoadTexture(renderer, "../assets/mars.png");
+    SDL_Texture *menu_back = IMG_LoadTexture(renderer, "../assets/menu.png");
+    SDL_Texture *info_back = IMG_LoadTexture(renderer, "../assets/info.png");
+    SDL_Texture *settings_back = IMG_LoadTexture(renderer, "../assets/settings.png");
     TTF_Font *font = TTF_OpenFont("../assets/font1.ttf", 100);
     TTF_Font *font2 = TTF_OpenFont("../assets/font2.ttf", 30);
     TTF_Font *font3 = TTF_OpenFont("../assets/font2.ttf", 20);
@@ -75,11 +78,13 @@ int main(int argc, char* argv[]) {
     if (!font3) {return -1;}
     if(!rocket_img){return -1;}
     if(!mars_img){return -1;}
+    if(!menu_back){return -1;}
 
     while (runing) {
         switch(stage){
             case 1:
-                inMenu(renderer, &e, &runing, &stage, font, font2, font3, &option, &option_arrow_X, &option_arrow_Y);
+                inMenu(renderer, &e, &runing, &stage, font, font2, font3, &option, &option_arrow_X,
+                    &option_arrow_Y, menu_back, info_back, settings_back);
                 break;
 
             case 2:
