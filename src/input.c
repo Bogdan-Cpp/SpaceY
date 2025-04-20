@@ -25,29 +25,46 @@ void gameInput(SDL_Event *e, int *runing, float *poz_X, float *poz_Y, int *stage
                 
                 //menus navigation
                 case SDLK_ESCAPE:
-                    SDL_Quit();
-                    break;
-                
-                case SDLK_1:
                     *stage = 1;
-                    break;
-                
-                case SDLK_3:
-                    *stage = 3;
                     break;
             }
         }
     }
 }
 
-void menuInput(SDL_Event *e, int *runing, int *stage){
+void menuInput(SDL_Event *e, int *runing, int *stage, int *option, int *option_arrow_X,
+    int *option_arrow_Y){
+
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
             *runing = 0;
         }
         
-        if(e->key.keysym.sym){
+        if(e->type == SDL_KEYDOWN && e->key.repeat == 0){
             switch(e->key.keysym.sym){
+                case SDLK_RETURN:
+                    if(*option == 1){*stage = 2;}
+                    else if(*option == 3){*stage = 3;}
+                    break;
+
+                case SDLK_DOWN:
+                    if(*option == 3){
+                        *option = 1;
+                    }
+                    else{
+                        *option += 1;
+                    }
+                    break;
+
+                case SDLK_UP:
+                    if(*option == 1){
+                        *option = 3;
+                    }
+                    else{
+                        *option -= 1;
+                    }
+                    break;
+
                 case SDLK_2:
                     *stage = 2;
                     break;
@@ -56,6 +73,20 @@ void menuInput(SDL_Event *e, int *runing, int *stage){
                     *stage = 3;
                     break;
             }
+        }
+        else if(*option == 1){
+            *option_arrow_X = 500;
+            *option_arrow_Y = 400;
+        }
+
+        else if(*option == 2){
+            *option_arrow_X = 500;
+            *option_arrow_Y = 450;
+        }
+        
+        else if(*option == 3){
+            *option_arrow_X = 460;
+            *option_arrow_Y = 500;
         }
     }
 }
@@ -68,12 +99,8 @@ void settingsInput(SDL_Event *e, int *runing, int *stage){
         
         if(e->key.keysym.sym){
             switch(e->key.keysym.sym){
-                case SDLK_1:
+                case SDLK_ESCAPE:
                     *stage = 1;
-                    break;
-                
-                case SDLK_2:
-                    *stage = 2;
                     break;
             }
         }

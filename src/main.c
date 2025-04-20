@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include "../include/input.h"
@@ -23,6 +24,11 @@ int main(int argc, char* argv[]) {
     if (IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG) {
         printf("ERROR to SDL_image: %s\n", IMG_GetError());
         SDL_Quit();
+        return 1;
+    }
+
+    if(TTF_Init() == -1){
+        printf("Eroare TTF: %s\n", TTF_GetError());
         return 1;
     }
 
@@ -53,17 +59,27 @@ int main(int argc, char* argv[]) {
     float poz_X = width / 2;
     float poz_Y = heith / 2;
     int stage = 1;
+    int option = 1;
+    int count = 1;
+    int option_arrow_X = 500;
+    int option_arrow_Y = 400;
 
     SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket.png");
     SDL_Texture *mars_img = IMG_LoadTexture(renderer, "../assets/mars.png");
+    TTF_Font *font = TTF_OpenFont("../assets/font1.ttf", 100);
+    TTF_Font *font2 = TTF_OpenFont("../assets/font2.ttf", 30);
+    TTF_Font *font3 = TTF_OpenFont("../assets/font2.ttf", 20);
     
+    if (!font) {return -1;}
+    if (!font2) {return -1;}
+    if (!font3) {return -1;}
     if(!rocket_img){return -1;}
     if(!mars_img){return -1;}
 
     while (runing) {
         switch(stage){
             case 1:
-                inMenu(renderer, &e, &runing, &stage);
+                inMenu(renderer, &e, &runing, &stage, font, font2, font3, &option, &option_arrow_X, &option_arrow_Y);
                 break;
 
             case 2:
