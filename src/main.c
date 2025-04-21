@@ -2,10 +2,14 @@
 #include <stdio.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include "../include/input.h"
 #include "../include/game.h"
+#include "../include/menu.h"
+#include "../include/info.h"
+#include "../include/settings.h"
 
 float width = 1200.f;
 float heith = 800.f;
@@ -53,14 +57,13 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
-    
+
     SDL_Event e;
     int runing = 1;
     float poz_X = width / 2;
     float poz_Y = heith / 2;
     int stage = 1;
     int option = 1;
-    int count = 1;
     int option_arrow_X = 500;
     int option_arrow_Y = 400;
 

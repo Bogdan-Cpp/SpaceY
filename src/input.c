@@ -25,8 +25,8 @@ void gameInput(SDL_Event *e, int *runing, float *poz_X, float *poz_Y, int *stage
                 
                 //menus navigation
                 case SDLK_ESCAPE:
-                    *stage = 1;
-                    break;
+                *stage = 1;
+                break;
             }
         }
     }

@@ -1,5 +1,5 @@
-#ifndef INCLUDE_H
-#define INCLUDE_H
+#ifndef INPUT_H
+#define INPUT_H
 
 void gameInput(SDL_Event *e, int *runing, float *poz_X, float *poz_Y, int *stage);
 

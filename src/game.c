@@ -1,43 +1,41 @@
 #include <SDL.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include "../include/game.h"
 #include "../include/input.h"
-#include "../include/draw.h"
 
 void inGame(SDL_Event *e, SDL_Renderer *renderer, SDL_Texture *rocket_img, SDL_Texture *mars_img,
     int *runing, float *poz_X, float *poz_Y, int *stage){
     
     gameInput(e, runing, poz_X, poz_Y, stage);
-
-    gameWindowInit(renderer);
-    gameDraw(renderer, rocket_img, mars_img, poz_X, poz_Y);
-}
-
-void inMenu(SDL_Renderer *renderer, SDL_Event *e, int *runing, int *stage, TTF_Font *font, TTF_Font *font2,
-    TTF_Font *font3, int *option, int *option_arrow_X, int *option_arrow_Y, SDL_Texture *menu_back, 
-    SDL_Texture *info_back, SDL_Texture *settings_back){
     
-    menuInput(e, runing, stage, option, option_arrow_X, option_arrow_Y);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
 
-    gameWindowInit(renderer);
-    menuDraw(renderer, font, font2, font3, option_arrow_X, option_arrow_Y, menu_back, info_back,
-        settings_back, option);
+    int win_X;
+    int win_Y;
+    
+    SDL_Rect mars_rect = {100, 400, 200, 200};
+    SDL_RenderCopy(renderer, mars_img, NULL, &mars_rect);
+    
+    SDL_Rect rocket_rect = {*poz_X, *poz_Y, 80, 100};
+    SDL_RenderCopy(renderer, rocket_img, NULL, &rocket_rect);
+        
+    if (checkCollision(rocket_rect, mars_rect)){
+        printf("coliziune\n");
+    }else{
+        printf("not coliding\n");
+    }
+    
+    SDL_RenderPresent(renderer);
+    
+    SDL_Delay(16); 
 }
 
-void inSettings(SDL_Renderer *renderer, SDL_Event *e, int *runing, int *stage){
-    settingsInput(e, runing, stage);
-
-    gameWindowInit(renderer);
-    settingsDraw(renderer);
-}
-
-void inInfo(SDL_Renderer *renderer, SDL_Event *e, int *runing, int *stage){
-    infoInput(e, runing, stage);
-
-    gameWindowInit(renderer);
-    infoDraw(renderer);
+int checkCollision(SDL_Rect a, SDL_Rect b) {
+    return SDL_HasIntersection(&a, &b);
 }
