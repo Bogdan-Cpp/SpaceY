@@ -96,15 +96,21 @@ int main(int argc, char* argv[]) {
     SDL_Event e;
     int runing = 1;
     float poz_X = width / 2;
-    float poz_Y = heith / 2;
     int stage = 1;
     int option = 1;
     int option_arrow_X = 500;
     int option_arrow_Y = 400;
     bool isAlgo = true;
+    int randY;
+    float playerMove = -100;
+    int frameCounter = 0;
+    int countTexture = 0;
+
     srand(time(NULL));
 
-    SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket.png");
+    SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket1.png");
+    SDL_Texture *rocket_img2 = IMG_LoadTexture(renderer, "../assets/rocket2.png");
+    SDL_Texture *rocket_img3 = IMG_LoadTexture(renderer, "../assets/rocket3.png");
     SDL_Texture *test = IMG_LoadTexture(renderer, "../assets/nederplanet.png");
     
     SDL_Texture *menu_back = IMG_LoadTexture(renderer, "../assets/menu.png");
@@ -119,6 +125,8 @@ int main(int argc, char* argv[]) {
     if (!font2) {return -1;}
     if (!font3) {return -1;}
     if(!rocket_img){return -1;}
+    if(!rocket_img2){return -1;}
+    if(!rocket_img3){return -1;}
     if(!menu_back){return -1;}
 
     while (runing) {
@@ -178,31 +186,66 @@ int main(int argc, char* argv[]) {
                 break;
 
             case 2:
-                gameInput(&e, &runing, &poz_X, &poz_Y, &stage);
+                gameInput(&e, &runing, &poz_X, &playerMove, &stage);
     
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
-                SDL_Rect rocket_rect = {poz_X, poz_Y, 80, 100};
-                Pozitions p;
-                Obstacole obs[4];
-                p.x = 0;
-                p.y = 200;
-                p.sx = 200;
-                p.sy = p.sx;
+                SDL_Rect rocket_rect = {poz_X, 450, 80, 100};
+                playerMove += 1;
 
-                obs[0] = obstacle(test, p.x, p.y, p.sx, p.sy, checkCollision);
-                obs[1] = obstacle(test, p.x + 400, p.y, p.sx, p.sy, checkCollision);
-                obs[2] = obstacle(test, p.x + 700, p.y, p.sx, p.sy, checkCollision);
-                obs[3] = obstacle(test, p.x + 1000, p.y, p.sx, p.sy, checkCollision);
+                Pozitions p2; 
+                Pozitions p3;
+                Pozitions p4;
+                Pozitions p5;
+                Obstacole obs[4];
+                int plan[6][4] = {
+                    {2, 1, 1, 1},
+                    {5, 1, 4, 3},
+                    {1, 4, 1, 1},
+                    {1, 3, 2, 1},
+                    {1, 1, 5, 1},
+                    {1, 2, 1, 1}
+                };
+
+                if(isAlgo){
+                    int path = rand() % 3;
+
+                    p2.x = rand() % 1000;
+                    p3.x = rand() % 1000;
+                    p4.x = rand() % 1000;
+                    p5.x = rand() % 1000;
+
+                    p2.sx = rand() % 250;
+                    p3.sx = rand() % 250;
+                    p4.sx = rand() % 200;
+                    p5.sx = rand() % 200;
+
+                    p2.sy = p2.sx;
+                    p3.sy = p3.sx;
+                    p4.sy = p4.sx;
+                    p5.sy = p5.sx;
+
+                    isAlgo = false;
+                }
                 
-                for(int i = 0; i < 4; i++){
+                for(int i = 0; i < 8; i++){
                     if(checkCollision(rocket_rect, obs[i].about)){
                         printf("Coliziune\n");
                     }
                     SDL_RenderCopy(renderer, obs[i].texture, NULL, &obs[i].about);
-                    
                 }
-                SDL_RenderCopy(renderer, rocket_img, NULL, &rocket_rect);
+
+                frameCounter++;
+                if (frameCounter >= 10) {
+                    countTexture = (countTexture + 1) % 3;
+                    frameCounter = 0;
+                }
+                switch(countTexture){
+                    case 0: SDL_RenderCopy(renderer, rocket_img, NULL, &rocket_rect); break;
+                    case 1: SDL_RenderCopy(renderer, rocket_img2, NULL, &rocket_rect); break;
+                    case 2: SDL_RenderCopy(renderer, rocket_img3, NULL, &rocket_rect); break;
+                }
+
                 SDL_RenderPresent(renderer);
                 SDL_Delay(16); 
                 break;
