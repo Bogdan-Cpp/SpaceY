@@ -11,10 +11,6 @@ find_package(SDL2_ttf REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
 add_executable(${PROJECT_NAME}
-    ../src/settings.c
-    ../src/info.c
-    ../src/game.c
-    ../src/menu.c 
     ../src/input.c 
     ../src/main.c)
 
