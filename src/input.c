@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "../include/input.h"
 
-void gameInput(SDL_Event *e, int *runing, float *poz_X, float *poz_Y, int *stage){
+void gameInput(SDL_Event *e, int *runing, float *poz_X, float poz_Y, int *stage){
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
             *runing = 0;

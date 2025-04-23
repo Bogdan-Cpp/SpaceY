@@ -95,11 +95,13 @@ int main(int argc, char* argv[]) {
     int option_arrow_Y = 400;
     bool isAlgo = true;
     int randY;
-    int y = 0;
-    int x = 0;
-    float playerMove = -100;
+    float move = -100;
     int frameCounter = 0;
     int countTexture = 0;
+    int poz[72] = {0, -100, 200, 300, -100, 200, 600, -100, 200, 1000, -100, 200,
+                   0, -400, 200, 300, -400, 200, 600, -400, 200, 1000, -400, 200,
+                   0, -700, 200, 300, -700, 200, 600, -700, 200, 1000, -700, 200,
+                   0, -900, 200, 300, -900, 200, 600, -900, 200, 1000, -900, 200};
 
     srand(time(NULL));
 
@@ -191,44 +193,43 @@ int main(int argc, char* argv[]) {
                 break;
 
             case 2:
-                gameInput(&e, &runing, &poz_X, &playerMove, &stage);
+                int count = 0;
+                int y = 0;
+                int x = 0;
+                gameInput(&e, &runing, &poz_X, 450, &stage);
     
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
                 SDL_Rect rocket_rect = {poz_X, 450, 80, 100};
-                playerMove += 1;
+                move += 1;
 
                 Obstacole obs[6][4];
                 int plan[6][4] = {
-                    {2, 1, 1, 1},
-                    {5, 0, 4, 3},
+                    {5, 2, 1, 4},
+                    {5, 4, 4, 3},
                     {1, 4, 1, 1},
-                    {1, 0, 2, 0},
+                    {1, 5, 2, 2},
                     {1, 1, 5, 1},
-                    {1, 0, 1, 1}
+                    {1, 3, 1, 1}
                 };
-                
-                if(isAlgo){
-                    for(int i = 0; i < 6; i++){
-                        for(int j = 0; j < 4; j++){
-                            int a = rand() % 6;
-                            int size = 200;
-                            int pozx = 0 + x;
-                            int pozy = -100 - y;
-                            plan[i][j] = a;
-                            if(plan[1][0] || plan[2][0] || plan[3][0] || plan[4][0] || plan[5][0]){y += 200;}
-                            switch(plan[i][j]){
-                                case 1: obs[i][j] = obstacle(nederplanet, x, y, size, size, checkCollision); break;
-                                case 2: obs[i][j] = obstacle(mars, x, y, size, size, checkCollision); break;
-                                case 3: obs[i][j] = obstacle(iceplanet, x, y, size, size, checkCollision); break;
-                                case 4: obs[i][j] = obstacle(endplanet, x, y, size, size, checkCollision); break;
-                                case 5: obs[i][j] = obstacle(desertplanet, x, y, size, size, checkCollision); break;
-                            }
-                            x += 300;
+
+                for(int i = 0; i < 6; i++){
+                    for(int j = 0; j < 4; j++){
+                        int pozx = poz[count];
+                        count++;
+                        int pozy = poz[count];
+                        count++;
+                        int size = poz[count];
+                        count++;
+                        switch(plan[i][j]){
+                            case 0:  break;
+                            case 1: obs[i][j] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 2: obs[i][j] = obstacle(mars, pozx, pozy + move, size, size, checkCollision); break;
+                            case 3: obs[i][j] = obstacle(iceplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 4: obs[i][j] = obstacle(endplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 5: obs[i][j] = obstacle(desertplanet, pozx, pozy + move, size, size, checkCollision); break;
                         }
-                    } 
-    
-                    isAlgo = false;
+                    }
                 }
                 
                 for(int x = 0; x < 6; x++){
@@ -236,7 +237,10 @@ int main(int argc, char* argv[]) {
                         if(checkCollision(rocket_rect, obs[x][y].about)){
                             printf("Coliziune\n");
                         }
-                        SDL_RenderCopy(renderer, obs[x][y].texture, NULL, &obs[x][y].about);
+                        if(obs[x][y].texture != NULL){
+                            SDL_RenderCopy(renderer, obs[x][y].texture, NULL, &obs[x][y].about);
+                        }
+                        else{printf("Texture is NULL\n");}
                     }
                 }
 

@@ -1,7 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-void gameInput(SDL_Event *e, int *runing, float *poz_X, float *poz_Y, int *stage);
+void gameInput(SDL_Event *e, int *runing, float *poz_X, float poz_Y, int *stage);
 
 void menuInput(SDL_Event *e, int *runing, int *stage, int *option, int *option_arrow_X,
     int *option_arrow_Y);
