@@ -9,13 +9,6 @@
 #include "../include/input.h"
 
 typedef struct{
-    int x;
-    int y;
-    int sx;
-    int sy;
-}Pozitions;
-
-typedef struct{
     SDL_Texture *texture;
     SDL_Rect about;
     int poz_X;
@@ -102,6 +95,8 @@ int main(int argc, char* argv[]) {
     int option_arrow_Y = 400;
     bool isAlgo = true;
     int randY;
+    int y = 0;
+    int x = 0;
     float playerMove = -100;
     int frameCounter = 0;
     int countTexture = 0;
@@ -111,7 +106,12 @@ int main(int argc, char* argv[]) {
     SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket1.png");
     SDL_Texture *rocket_img2 = IMG_LoadTexture(renderer, "../assets/rocket2.png");
     SDL_Texture *rocket_img3 = IMG_LoadTexture(renderer, "../assets/rocket3.png");
-    SDL_Texture *test = IMG_LoadTexture(renderer, "../assets/nederplanet.png");
+    
+    SDL_Texture *nederplanet = IMG_LoadTexture(renderer, "../assets/nederplanet.png");
+    SDL_Texture *mars = IMG_LoadTexture(renderer, "../assets/mars.png");
+    SDL_Texture *iceplanet = IMG_LoadTexture(renderer, "../assets/iceplanet.png");
+    SDL_Texture *endplanet = IMG_LoadTexture(renderer, "../assets/endplanet.png");
+    SDL_Texture *desertplanet = IMG_LoadTexture(renderer, "../assets/desertplanet.png");
     
     SDL_Texture *menu_back = IMG_LoadTexture(renderer, "../assets/menu.png");
     SDL_Texture *info_back = IMG_LoadTexture(renderer, "../assets/info.png");
@@ -120,7 +120,12 @@ int main(int argc, char* argv[]) {
     TTF_Font *font2 = TTF_OpenFont("../assets/font2.ttf", 30);
     TTF_Font *font3 = TTF_OpenFont("../assets/font2.ttf", 20);
     
-    if(!test){return -1;}
+    if(!nederplanet){return -1;}
+    if(!mars){return -1;}
+    if(!iceplanet){return -1;}
+    if(!endplanet){return -1;}
+    if(!desertplanet){return -1;}
+
     if (!font) {return -1;}
     if (!font2) {return -1;}
     if (!font3) {return -1;}
@@ -193,46 +198,46 @@ int main(int argc, char* argv[]) {
                 SDL_Rect rocket_rect = {poz_X, 450, 80, 100};
                 playerMove += 1;
 
-                Pozitions p2; 
-                Pozitions p3;
-                Pozitions p4;
-                Pozitions p5;
-                Obstacole obs[4];
+                Obstacole obs[6][4];
                 int plan[6][4] = {
                     {2, 1, 1, 1},
-                    {5, 1, 4, 3},
+                    {5, 0, 4, 3},
                     {1, 4, 1, 1},
-                    {1, 3, 2, 1},
+                    {1, 0, 2, 0},
                     {1, 1, 5, 1},
-                    {1, 2, 1, 1}
+                    {1, 0, 1, 1}
                 };
-
+                
                 if(isAlgo){
-                    int path = rand() % 3;
-
-                    p2.x = rand() % 1000;
-                    p3.x = rand() % 1000;
-                    p4.x = rand() % 1000;
-                    p5.x = rand() % 1000;
-
-                    p2.sx = rand() % 250;
-                    p3.sx = rand() % 250;
-                    p4.sx = rand() % 200;
-                    p5.sx = rand() % 200;
-
-                    p2.sy = p2.sx;
-                    p3.sy = p3.sx;
-                    p4.sy = p4.sx;
-                    p5.sy = p5.sx;
-
+                    for(int i = 0; i < 6; i++){
+                        for(int j = 0; j < 4; j++){
+                            int a = rand() % 6;
+                            int size = 200;
+                            int pozx = 0 + x;
+                            int pozy = -100 - y;
+                            plan[i][j] = a;
+                            if(plan[1][0] || plan[2][0] || plan[3][0] || plan[4][0] || plan[5][0]){y += 200;}
+                            switch(plan[i][j]){
+                                case 1: obs[i][j] = obstacle(nederplanet, x, y, size, size, checkCollision); break;
+                                case 2: obs[i][j] = obstacle(mars, x, y, size, size, checkCollision); break;
+                                case 3: obs[i][j] = obstacle(iceplanet, x, y, size, size, checkCollision); break;
+                                case 4: obs[i][j] = obstacle(endplanet, x, y, size, size, checkCollision); break;
+                                case 5: obs[i][j] = obstacle(desertplanet, x, y, size, size, checkCollision); break;
+                            }
+                            x += 300;
+                        }
+                    } 
+    
                     isAlgo = false;
                 }
                 
-                for(int i = 0; i < 8; i++){
-                    if(checkCollision(rocket_rect, obs[i].about)){
-                        printf("Coliziune\n");
+                for(int x = 0; x < 6; x++){
+                    for(int y = 0; y < 4; y++){
+                        if(checkCollision(rocket_rect, obs[x][y].about)){
+                            printf("Coliziune\n");
+                        }
+                        SDL_RenderCopy(renderer, obs[x][y].texture, NULL, &obs[x][y].about);
                     }
-                    SDL_RenderCopy(renderer, obs[i].texture, NULL, &obs[i].about);
                 }
 
                 frameCounter++;
