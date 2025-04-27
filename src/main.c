@@ -7,43 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "../include/input.h"
-
-typedef struct{
-    SDL_Texture *texture;
-    SDL_Rect about;
-    int poz_X;
-    int poz_Y;
-    int Scale_X;
-    int Scale_Y;
-    int (*checkCollision)(SDL_Rect, SDL_Rect);
-}Obstacole;
-
-Obstacole obstacle(SDL_Texture *texture, int poz_X, int poz_Y, int Scale_X, int Scale_Y,
-    int (*checkCollision)(SDL_Rect, SDL_Rect)){
-    
-    Obstacole ob;
-
-    ob.texture = texture;
-
-    ob.poz_X = poz_X;
-    ob.poz_Y = poz_Y;
-    ob.Scale_X = Scale_X;
-    ob.Scale_Y = Scale_Y;
-
-    ob.about.x = poz_X;
-    ob.about.y = poz_Y;
-    ob.about.w = Scale_X;
-    ob.about.h = Scale_Y;
-
-    ob.checkCollision = checkCollision;
-
-    return ob;
-}
-
-float width = 1200.f;
-float heith = 800.f;
-
-int checkCollision(SDL_Rect a, SDL_Rect b);
+#include "../include/main.h"
 
 int main(int argc, char* argv[]) {
     bool isCollision = false;
@@ -95,26 +59,32 @@ int main(int argc, char* argv[]) {
     int option_arrow_Y = 400;
     bool isAlgo = true;
     int randY;
+    float move2 = 0;
     float move = -100;
     int frameCounter = 0;
     int countTexture = 0;
-    int poz[72] = {0, -100, 200, 300, -100, 200, 600, -100, 200, 1000, -100, 200,
-                   0, -400, 200, 300, -400, 200, 600, -400, 200, 1000, -400, 200,
-                   0, -700, 200, 300, -700, 200, 600, -700, 200, 1000, -700, 200,
-                   0, -900, 200, 300, -900, 200, 600, -900, 200, 1000, -900, 200};
+    float backpoz1 = 0;
+    float backpoz2 = -800;
+    int temp[4000];
 
     srand(time(NULL));
+    int rand_obj;
+    int pozx;
+    int pozy;
+    int size;
 
     SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket1.png");
     SDL_Texture *rocket_img2 = IMG_LoadTexture(renderer, "../assets/rocket2.png");
     SDL_Texture *rocket_img3 = IMG_LoadTexture(renderer, "../assets/rocket3.png");
     
     SDL_Texture *nederplanet = IMG_LoadTexture(renderer, "../assets/nederplanet.png");
+    SDL_Texture *strangemoon = IMG_LoadTexture(renderer, "../assets/strangemoon.png");
     SDL_Texture *mars = IMG_LoadTexture(renderer, "../assets/mars.png");
     SDL_Texture *iceplanet = IMG_LoadTexture(renderer, "../assets/iceplanet.png");
     SDL_Texture *endplanet = IMG_LoadTexture(renderer, "../assets/endplanet.png");
     SDL_Texture *desertplanet = IMG_LoadTexture(renderer, "../assets/desertplanet.png");
     
+    SDL_Texture *background = IMG_LoadTexture(renderer, "../assets/background.png");
     SDL_Texture *menu_back = IMG_LoadTexture(renderer, "../assets/menu.png");
     SDL_Texture *info_back = IMG_LoadTexture(renderer, "../assets/info.png");
     SDL_Texture *settings_back = IMG_LoadTexture(renderer, "../assets/settings.png");
@@ -123,11 +93,12 @@ int main(int argc, char* argv[]) {
     TTF_Font *font3 = TTF_OpenFont("../assets/font2.ttf", 20);
     
     if(!nederplanet){return -1;}
+    if(!strangemoon){return -1;}
     if(!mars){return -1;}
     if(!iceplanet){return -1;}
     if(!endplanet){return -1;}
     if(!desertplanet){return -1;}
-
+    if(!background){return -1;}
     if (!font) {return -1;}
     if (!font2) {return -1;}
     if (!font3) {return -1;}
@@ -194,54 +165,74 @@ int main(int argc, char* argv[]) {
 
             case 2:
                 int count = 0;
-                int y = 0;
-                int x = 0;
                 gameInput(&e, &runing, &poz_X, 450, &stage);
     
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderClear(renderer);
+                SDL_Rect background_rect = {0, backpoz1, 1200, 800};
+                SDL_Rect background_rect2 = {0, backpoz2, 1200, 800};
+                backpoz1 += 0.7;
+                backpoz2 += 0.7f;
+                if(backpoz1 >= 800){backpoz1 = -800;}
+                if(backpoz2 >= 800){backpoz2 = -800;}
                 SDL_Rect rocket_rect = {poz_X, 450, 80, 100};
-                move += 1;
+                SDL_RenderCopy(renderer, background, NULL, &background_rect);
+                SDL_RenderCopy(renderer, background, NULL, &background_rect2);
 
-                Obstacole obs[6][4];
-                int plan[6][4] = {
-                    {5, 2, 1, 4},
-                    {5, 4, 4, 3},
-                    {1, 4, 1, 1},
-                    {1, 5, 2, 2},
-                    {1, 1, 5, 1},
-                    {1, 3, 1, 1}
-                };
+                move += 3;
 
-                for(int i = 0; i < 6; i++){
-                    for(int j = 0; j < 4; j++){
-                        int pozx = poz[count];
+                Obstacole obs[1000];
+                
+                for(int i = 0; i < 1000; i++){
+                    if(isAlgo){
+                        rand_obj = rand() % 7;
+                        temp[count] = rand_obj;
                         count++;
-                        int pozy = poz[count];
+
+                        pozx = rand() % 1000;
+                        temp[count] = pozx;
                         count++;
-                        int size = poz[count];
+                    
+                        pozy -= 100;
+                        temp[count] = pozy;
                         count++;
-                        switch(plan[i][j]){
-                            case 0:  break;
-                            case 1: obs[i][j] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
-                            case 2: obs[i][j] = obstacle(mars, pozx, pozy + move, size, size, checkCollision); break;
-                            case 3: obs[i][j] = obstacle(iceplanet, pozx, pozy + move, size, size, checkCollision); break;
-                            case 4: obs[i][j] = obstacle(endplanet, pozx, pozy + move, size, size, checkCollision); break;
-                            case 5: obs[i][j] = obstacle(desertplanet, pozx, pozy + move, size, size, checkCollision); break;
-                        }
+
+                        size = rand() % 300;
+                        temp[count] = size;
+                        count++;
+                    }else{
+                        rand_obj = temp[count];
+                        count++;
+                        pozx = temp[count];
+                        count++;
+                        pozy = temp[count];
+                        count++;
+                        size = temp[count];
+                        count++;
+                    }
+                    
+                    switch(rand_obj){
+                        case 0: obs[i] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
+                        case 1: obs[i] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
+                        case 2: obs[i] = obstacle(mars, pozx, pozy + move, size, size, checkCollision); break;
+                        case 3: obs[i] = obstacle(iceplanet, pozx, pozy + move, size, size, checkCollision); break;
+                        case 4: obs[i] = obstacle(endplanet, pozx, pozy + move, size, size, checkCollision); break;
+                        case 5: obs[i] = obstacle(desertplanet, pozx, pozy + move, size, size, checkCollision); break;
+                        case 6: obs[i] = obstacle(strangemoon, pozx, pozy + move, size, size, checkCollision); break;
                     }
                 }
+                isAlgo = false;
                 
-                for(int x = 0; x < 6; x++){
-                    for(int y = 0; y < 4; y++){
-                        if(checkCollision(rocket_rect, obs[x][y].about)){
-                            printf("Coliziune\n");
-                        }
-                        if(obs[x][y].texture != NULL){
-                            SDL_RenderCopy(renderer, obs[x][y].texture, NULL, &obs[x][y].about);
-                        }
-                        else{printf("Texture is NULL\n");}
+                for(int x = 0; x < 1000; x++){
+                    
+                    if(checkCollision(rocket_rect, obs[x].about)){
+                        isAlgo = true;
+                        break;
                     }
+                    if(obs[x].texture != NULL){
+                        SDL_RenderCopy(renderer, obs[x].texture, NULL, &obs[x].about);
+                    }
+                    else{printf("Texture is NULL\n");}
                 }
 
                 frameCounter++;
@@ -254,7 +245,7 @@ int main(int argc, char* argv[]) {
                     case 1: SDL_RenderCopy(renderer, rocket_img2, NULL, &rocket_rect); break;
                     case 2: SDL_RenderCopy(renderer, rocket_img3, NULL, &rocket_rect); break;
                 }
-
+                
                 SDL_RenderPresent(renderer);
                 SDL_Delay(16); 
                 break;

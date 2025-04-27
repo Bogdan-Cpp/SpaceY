@@ -5,6 +5,8 @@
         "stdbool.h": "c",
         "sdl_image.h": "c",
         "input.h": "c",
-        "settings.h": "c"
+        "settings.h": "c",
+        "hash_map": "c",
+        "algorithm": "c"
     }
 }
