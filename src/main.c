@@ -59,30 +59,30 @@ int main(int argc, char* argv[]) {
     int option_arrow_Y = 400;
     bool isAlgo = true;
     int randY;
-    float move2 = 0;
-    float move = -100;
+    float move = -150;
     int frameCounter = 0;
     int countTexture = 0;
     float backpoz1 = 0;
     float backpoz2 = -800;
     int temp[4000];
+    Obstacole *obs = NULL;
 
     srand(time(NULL));
     int rand_obj;
     int pozx;
-    int pozy;
+    int pozy  = -100;
     int size;
 
     SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket1.png");
     SDL_Texture *rocket_img2 = IMG_LoadTexture(renderer, "../assets/rocket2.png");
     SDL_Texture *rocket_img3 = IMG_LoadTexture(renderer, "../assets/rocket3.png");
     
-    SDL_Texture *nederplanet = IMG_LoadTexture(renderer, "../assets/nederplanet.png");
-    SDL_Texture *strangemoon = IMG_LoadTexture(renderer, "../assets/strangemoon.png");
-    SDL_Texture *mars = IMG_LoadTexture(renderer, "../assets/mars.png");
-    SDL_Texture *iceplanet = IMG_LoadTexture(renderer, "../assets/iceplanet.png");
-    SDL_Texture *endplanet = IMG_LoadTexture(renderer, "../assets/endplanet.png");
-    SDL_Texture *desertplanet = IMG_LoadTexture(renderer, "../assets/desertplanet.png");
+    SDL_Texture *nederplanet = IMG_LoadTexture(renderer, "../assets/p2.png");
+    SDL_Texture *strangemoon = IMG_LoadTexture(renderer, "../assets/p2.png");
+    SDL_Texture *mars = IMG_LoadTexture(renderer, "../assets/p3.png");
+    SDL_Texture *iceplanet = IMG_LoadTexture(renderer, "../assets/p4.png");
+    SDL_Texture *endplanet = IMG_LoadTexture(renderer, "../assets/p5.png");
+    SDL_Texture *desertplanet = IMG_LoadTexture(renderer, "../assets/p6.png");
     
     SDL_Texture *background = IMG_LoadTexture(renderer, "../assets/background.png");
     SDL_Texture *menu_back = IMG_LoadTexture(renderer, "../assets/menu.png");
@@ -180,45 +180,49 @@ int main(int argc, char* argv[]) {
                 SDL_RenderCopy(renderer, background, NULL, &background_rect2);
 
                 move += 3;
-
-                Obstacole obs[1000];
                 
-                for(int i = 0; i < 1000; i++){
-                    if(isAlgo){
-                        rand_obj = rand() % 7;
-                        temp[count] = rand_obj;
-                        count++;
+                if(obs == NULL){
+                    obs = malloc(1000 * sizeof(Obstacole));
+                }
 
-                        pozx = rand() % 1000;
-                        temp[count] = pozx;
-                        count++;
-                    
-                        pozy -= 100;
-                        temp[count] = pozy;
-                        count++;
-
-                        size = rand() % 300;
-                        temp[count] = size;
-                        count++;
-                    }else{
-                        rand_obj = temp[count];
-                        count++;
-                        pozx = temp[count];
-                        count++;
-                        pozy = temp[count];
-                        count++;
-                        size = temp[count];
-                        count++;
-                    }
-                    
-                    switch(rand_obj){
-                        case 0: obs[i] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
-                        case 1: obs[i] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
-                        case 2: obs[i] = obstacle(mars, pozx, pozy + move, size, size, checkCollision); break;
-                        case 3: obs[i] = obstacle(iceplanet, pozx, pozy + move, size, size, checkCollision); break;
-                        case 4: obs[i] = obstacle(endplanet, pozx, pozy + move, size, size, checkCollision); break;
-                        case 5: obs[i] = obstacle(desertplanet, pozx, pozy + move, size, size, checkCollision); break;
-                        case 6: obs[i] = obstacle(strangemoon, pozx, pozy + move, size, size, checkCollision); break;
+                if(obs != NULL){
+                    for(int i = 0; i < 1000; i++){
+                        if(isAlgo){
+                            rand_obj = rand() % 7;
+                            temp[count] = rand_obj;
+                            count++;
+    
+                            pozx = rand() % 1000;
+                            temp[count] = pozx;
+                            count++;
+                        
+                            pozy -= 100;
+                            temp[count] = pozy;
+                            count++;
+    
+                            size = rand() % 300;
+                            temp[count] = size;
+                            count++;
+                        }else{
+                            rand_obj = temp[count];
+                            count++;
+                            pozx = temp[count];
+                            count++;
+                            pozy = temp[count];
+                            count++;
+                            size = temp[count];
+                            count++;
+                        }
+                        
+                        switch(rand_obj){
+                            case 0: obs[i] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 1: obs[i] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 2: obs[i] = obstacle(mars, pozx, pozy + move, size, size, checkCollision); break;
+                            case 3: obs[i] = obstacle(iceplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 4: obs[i] = obstacle(endplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 5: obs[i] = obstacle(desertplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 6: obs[i] = obstacle(strangemoon, pozx, pozy + move, size, size, checkCollision); break;
+                        }
                     }
                 }
                 isAlgo = false;
@@ -226,7 +230,14 @@ int main(int argc, char* argv[]) {
                 for(int x = 0; x < 1000; x++){
                     
                     if(checkCollision(rocket_rect, obs[x].about)){
-                        printf("Hello\n");
+                        free(obs);
+                        obs = NULL;
+                        isAlgo = true;
+                        pozy = 0;
+                        pozy = -100;
+                        count = 0;
+                        move = -150;
+                        break;
                     }
                     if(obs[x].texture != NULL){
                         SDL_RenderCopy(renderer, obs[x].texture, NULL, &obs[x].about);
