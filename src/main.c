@@ -226,8 +226,7 @@ int main(int argc, char* argv[]) {
                 for(int x = 0; x < 1000; x++){
                     
                     if(checkCollision(rocket_rect, obs[x].about)){
-                        isAlgo = true;
-                        break;
+                        printf("Hello\n");
                     }
                     if(obs[x].texture != NULL){
                         SDL_RenderCopy(renderer, obs[x].texture, NULL, &obs[x].about);
