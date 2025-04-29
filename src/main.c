@@ -83,6 +83,7 @@ int main(int argc, char* argv[]) {
     SDL_Texture *iceplanet = IMG_LoadTexture(renderer, "../assets/p4.png");
     SDL_Texture *endplanet = IMG_LoadTexture(renderer, "../assets/p5.png");
     SDL_Texture *desertplanet = IMG_LoadTexture(renderer, "../assets/p6.png");
+    SDL_Texture *e1 = IMG_LoadTexture(renderer, "../assets/e1.png");
     
     SDL_Texture *background = IMG_LoadTexture(renderer, "../assets/background.png");
     SDL_Texture *menu_back = IMG_LoadTexture(renderer, "../assets/menu.png");
@@ -192,7 +193,7 @@ int main(int argc, char* argv[]) {
                             temp[count] = size;
                             count++;
 
-                            rand_obj = rand() % 7;
+                            rand_obj = rand() % 8;
                             temp[count] = rand_obj;
                             count++;
     
@@ -226,9 +227,11 @@ int main(int argc, char* argv[]) {
                             case 4: obs[i] = obstacle(endplanet, pozx, pozy + move, size, size, checkCollision); break;
                             case 5: obs[i] = obstacle(desertplanet, pozx, pozy + move, size, size, checkCollision); break;
                             case 6: obs[i] = obstacle(strangemoon, pozx, pozy + move, size, size, checkCollision); break;
+                            case 7: obs[i] = obstacle(e1, pozx, pozy + move, size, size, checkCollision); break;
                         }
                     }
                 }
+                printf("%d\n", pozy + move);
                 isAlgo = false;
                 
                 for(int x = 0; x < 1000; x++){
