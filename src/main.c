@@ -58,12 +58,12 @@ int main(int argc, char* argv[]) {
     int option_arrow_X = 500;
     int option_arrow_Y = 400;
     bool isAlgo = true;
-    int randY;
     float move = -150;
     int frameCounter = 0;
     int countTexture = 0;
     float backpoz1 = 0;
     float backpoz2 = -800;
+    int randomY;
     int temp[4000];
     Obstacole *obs = NULL;
 
@@ -188,6 +188,10 @@ int main(int argc, char* argv[]) {
                 if(obs != NULL){
                     for(int i = 0; i < 1000; i++){
                         if(isAlgo){
+                            size = rand() % 250 + 50;
+                            temp[count] = size;
+                            count++;
+
                             rand_obj = rand() % 7;
                             temp[count] = rand_obj;
                             count++;
@@ -195,22 +199,22 @@ int main(int argc, char* argv[]) {
                             pozx = rand() % 1000;
                             temp[count] = pozx;
                             count++;
-                        
-                            pozy -= 100;
+                            
+                            if(size > 100){
+                                pozy -= 300;
+                            }else{
+                                pozy -= 100;
+                            }
                             temp[count] = pozy;
                             count++;
-    
-                            size = rand() % 300;
-                            temp[count] = size;
-                            count++;
                         }else{
+                            size = temp[count];
+                            count++;
                             rand_obj = temp[count];
                             count++;
                             pozx = temp[count];
                             count++;
                             pozy = temp[count];
-                            count++;
-                            size = temp[count];
                             count++;
                         }
                         
