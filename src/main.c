@@ -231,7 +231,6 @@ int main(int argc, char* argv[]) {
                         }
                     }
                 }
-                printf("%d\n", pozy + move);
                 isAlgo = false;
                 
                 for(int x = 0; x < 1000; x++){
