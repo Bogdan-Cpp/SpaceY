@@ -52,6 +52,7 @@ int main(int argc, char* argv[]) {
 
     SDL_Event e;
     int runing = 1;
+    int *countEntry = NULL;
     float poz_X = width / 2;
     int stage = 1;
     int option = 1;
@@ -66,16 +67,21 @@ int main(int argc, char* argv[]) {
     int randomY;
     int temp[4000];
     Obstacole *obs = NULL;
+    bool isEntry = true;
+    bool *can = malloc(sizeof(bool));
+
+    if(can != NULL){*can = true;}
 
     srand(time(NULL));
     int rand_obj;
     int pozx;
     int pozy  = -100;
     int size;
-
+    
     SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket1.png");
     SDL_Texture *rocket_img2 = IMG_LoadTexture(renderer, "../assets/rocket2.png");
     SDL_Texture *rocket_img3 = IMG_LoadTexture(renderer, "../assets/rocket3.png");
+    SDL_Texture *entry = IMG_LoadTexture(renderer, "../assets/entry.png");
     
     SDL_Texture *nederplanet = IMG_LoadTexture(renderer, "../assets/p2.png");
     SDL_Texture *strangemoon = IMG_LoadTexture(renderer, "../assets/p2.png");
@@ -84,6 +90,8 @@ int main(int argc, char* argv[]) {
     SDL_Texture *endplanet = IMG_LoadTexture(renderer, "../assets/p5.png");
     SDL_Texture *desertplanet = IMG_LoadTexture(renderer, "../assets/p6.png");
     SDL_Texture *e1 = IMG_LoadTexture(renderer, "../assets/e1.png");
+
+    SDL_Surface *logo = IMG_Load("../assets/logo.png");
     
     SDL_Texture *background = IMG_LoadTexture(renderer, "../assets/background.png");
     SDL_Texture *menu_back = IMG_LoadTexture(renderer, "../assets/menu.png");
@@ -93,6 +101,8 @@ int main(int argc, char* argv[]) {
     TTF_Font *font2 = TTF_OpenFont("../assets/font2.ttf", 30);
     TTF_Font *font3 = TTF_OpenFont("../assets/font2.ttf", 20);
     
+    if(!entry){return -1;}
+    if(!logo){return -1;}
     if(!nederplanet){return -1;}
     if(!strangemoon){return -1;}
     if(!mars){return -1;}
@@ -108,60 +118,89 @@ int main(int argc, char* argv[]) {
     if(!rocket_img3){return -1;}
     if(!menu_back){return -1;}
 
+    SDL_SetWindowIcon(window, logo);
+
     while (runing) {
         switch(stage){
             case 1:
-                menuInput(&e, &runing, &stage, &option, &option_arrow_X, &option_arrow_Y);
+                if(isEntry){
+                    SDL_Rect entryRect = {0, 0, 1200, 800};
+                    SDL_RenderCopy(renderer, entry, NULL, &entryRect);
+                    SDL_RenderPresent(renderer);
+                    SDL_Delay(16);
 
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_RenderClear(renderer);
-        
-                SDL_Color title2 = {255, 255, 255};
-        
-                if(option == 1){
-                    SDL_Rect menu_rect = {0, 0, 1200, 800};
-                    SDL_RenderCopy(renderer, menu_back, NULL, &menu_rect);
+                    if(countEntry == NULL){
+                        countEntry = malloc(sizeof(int));
+                        if(countEntry != NULL && can != NULL && *can){
+                            *countEntry = 0;
+                            *can = false;
+                        }
+                    }else{(*countEntry) += 1;}
+
+                    if(countEntry != NULL && *countEntry == 200){
+                        SDL_DestroyTexture(entry);
+                        free(countEntry);
+                        free(can);
+
+                        can = NULL;
+                        countEntry = NULL;
+                        
+                        isEntry = false;
+                    }
+                }else{
+                    menuInput(&e, &runing, &stage, &option, &option_arrow_X, &option_arrow_Y);
+
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL_RenderClear(renderer);
+            
+                    SDL_Color title2 = {255, 255, 255};
+            
+                    if(option == 1){
+                        SDL_Rect menu_rect = {0, 0, 1200, 800};
+                        SDL_RenderCopy(renderer, menu_back, NULL, &menu_rect);
+                    }
+                    else if(option == 2){
+                        SDL_Rect info_rect = {0, 0, 1200, 800};
+                        SDL_RenderCopy(renderer, info_back, NULL, &info_rect);
+                    }
+                    else if(option == 3){
+                        SDL_Rect settings_rect = {0, 0, 1200, 800};
+                        SDL_RenderCopy(renderer, settings_back, NULL, &settings_rect);
+                    }
+            
+                    SDL_Surface *play = TTF_RenderText_Solid(font2, "Play", title2);
+                    SDL_Surface *info = TTF_RenderText_Solid(font2, "Info", title2);
+                    SDL_Surface *settings = TTF_RenderText_Solid(font2, "Settings", title2);
+                    SDL_Surface *arrow = TTF_RenderText_Solid(font2, "->", title2);
+            
+                    SDL_Texture *texture4 = SDL_CreateTextureFromSurface(renderer, play);
+                    SDL_Texture *texture5 = SDL_CreateTextureFromSurface(renderer, info);
+                    SDL_Texture *texture6 = SDL_CreateTextureFromSurface(renderer, settings);
+                    SDL_Texture *texture7 = SDL_CreateTextureFromSurface(renderer, arrow);
+            
+                    SDL_Rect rect4 = {540, 400, play->w, play->h};
+                    SDL_Rect rect5 = {540, 450, info->w, info->h};
+                    SDL_Rect rect6 = {500, 500, settings->w, settings->h};
+                    SDL_Rect rect7 = {option_arrow_X, option_arrow_Y, arrow->w, arrow->h};
+            
+                    SDL_RenderCopy(renderer, texture4, NULL, &rect4);
+                    SDL_RenderCopy(renderer, texture5, NULL, &rect5);
+                    SDL_RenderCopy(renderer, texture6, NULL, &rect6);
+                    SDL_RenderCopy(renderer, texture7, NULL, &rect7);
+            
+                    SDL_DestroyTexture(texture4);
+                    SDL_FreeSurface(play);
+                    SDL_DestroyTexture(texture5);
+                    SDL_FreeSurface(info);
+                    SDL_DestroyTexture(texture6);
+                    SDL_FreeSurface(settings);
+                    SDL_DestroyTexture(texture7);
+                    SDL_FreeSurface(arrow);
+            
+                    SDL_RenderPresent(renderer);
+                    SDL_Delay(16);
                 }
-                else if(option == 2){
-                    SDL_Rect info_rect = {0, 0, 1200, 800};
-                    SDL_RenderCopy(renderer, info_back, NULL, &info_rect);
-                }
-                else if(option == 3){
-                    SDL_Rect settings_rect = {0, 0, 1200, 800};
-                    SDL_RenderCopy(renderer, settings_back, NULL, &settings_rect);
-                }
-        
-                SDL_Surface *play = TTF_RenderText_Solid(font2, "Play", title2);
-                SDL_Surface *info = TTF_RenderText_Solid(font2, "Info", title2);
-                SDL_Surface *settings = TTF_RenderText_Solid(font2, "Settings", title2);
-                SDL_Surface *arrow = TTF_RenderText_Solid(font2, "->", title2);
-        
-                SDL_Texture *texture4 = SDL_CreateTextureFromSurface(renderer, play);
-                SDL_Texture *texture5 = SDL_CreateTextureFromSurface(renderer, info);
-                SDL_Texture *texture6 = SDL_CreateTextureFromSurface(renderer, settings);
-                SDL_Texture *texture7 = SDL_CreateTextureFromSurface(renderer, arrow);
-        
-                SDL_Rect rect4 = {540, 400, play->w, play->h};
-                SDL_Rect rect5 = {540, 450, info->w, info->h};
-                SDL_Rect rect6 = {500, 500, settings->w, settings->h};
-                SDL_Rect rect7 = {option_arrow_X, option_arrow_Y, arrow->w, arrow->h};
-        
-                SDL_RenderCopy(renderer, texture4, NULL, &rect4);
-                SDL_RenderCopy(renderer, texture5, NULL, &rect5);
-                SDL_RenderCopy(renderer, texture6, NULL, &rect6);
-                SDL_RenderCopy(renderer, texture7, NULL, &rect7);
-        
-                SDL_DestroyTexture(texture4);
-                SDL_FreeSurface(play);
-                SDL_DestroyTexture(texture5);
-                SDL_FreeSurface(info);
-                SDL_DestroyTexture(texture6);
-                SDL_FreeSurface(settings);
-                SDL_DestroyTexture(texture7);
-                SDL_FreeSurface(arrow);
-        
-                SDL_RenderPresent(renderer);
-                SDL_Delay(16);
+               
                 break;
 
             case 2:
@@ -234,7 +273,9 @@ int main(int argc, char* argv[]) {
                 isAlgo = false;
                 
                 for(int x = 0; x < 1000; x++){
-                    
+                    if(obs[x].poz_Y > 800){
+                        obs[x] = obstacle(NULL, pozx, pozy + move, size, size, checkCollision);
+                    }
                     if(checkCollision(rocket_rect, obs[x].about)){
                         free(obs);
                         obs = NULL;
