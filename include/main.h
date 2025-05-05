@@ -1,16 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-//structs
-typedef struct{
-    SDL_Texture *texture2;
-    SDL_Rect about;
-    int x;
-    int y;
-    int scale_x;
-    int scale_y;
-}Colectables;
-
+//struct
 typedef struct{
     SDL_Texture *texture;
     SDL_Rect about;

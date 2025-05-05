@@ -51,32 +51,40 @@ int main(int argc, char* argv[]) {
     }
 
     SDL_Event e;
-    int runing = 1;
-    int *countEntry = NULL;
-    float poz_X = width / 2;
-    int stage = 1;
-    int option = 1;
-    int option_arrow_X = 500;
-    int option_arrow_Y = 400;
-    bool isAlgo = true;
-    float move = -150;
-    int frameCounter = 0;
-    int countTexture = 0;
-    float backpoz1 = 0;
-    float backpoz2 = -800;
-    int randomY;
-    int temp[4000];
+
     Obstacole *obs = NULL;
-    bool isEntry = true;
+    Obstacole *obs2 = NULL;
+    int *countEntry = NULL;
     bool *can = malloc(sizeof(bool));
 
-    if(can != NULL){*can = true;}
-
-    srand(time(NULL));
     int rand_obj;
     int pozx;
     int pozy  = -100;
     int size;
+    int runing = 1;
+    int stage = 1;
+    int option = 1;
+    int option_arrow_X = 500;
+    int option_arrow_Y = 400;
+    int frameCounter = 0;
+    int countTexture = 0;
+    int randomY;
+    int *temp = NULL;
+    int *temp2 = NULL;
+
+    float backpoz1 = 0;
+    float backpoz2 = -800;
+    float move = -150;
+    float poz_X = width / 2;
+
+    bool isEntry = true;
+    bool isAlgo = true;
+    bool isArray1 = true;
+    bool isArray2 = false;
+
+    if(can != NULL){*can = true;}
+
+    srand(time(NULL));
     
     SDL_Texture *rocket_img = IMG_LoadTexture(renderer, "../assets/rocket1.png");
     SDL_Texture *rocket_img2 = IMG_LoadTexture(renderer, "../assets/rocket2.png");
@@ -221,12 +229,17 @@ int main(int argc, char* argv[]) {
 
                 move += 3;
                 
-                if(obs == NULL){
-                    obs = malloc(1000 * sizeof(Obstacole));
+                if(obs == NULL && temp == NULL && isArray1){
+                    obs = malloc(50 * sizeof(Obstacole));
+                    temp = malloc(200 * sizeof(int));
+                }
+                else if(obs2 == NULL && temp2 == NULL && isArray2){
+                    obs2 = malloc(50 * sizeof(Obstacole));
+                    temp2 = malloc(200 * sizeof(int));
                 }
 
-                if(obs != NULL){
-                    for(int i = 0; i < 1000; i++){
+                if(obs != NULL && temp != NULL && isArray1){
+                    for(int i = 0; i < 50; i++){
                         if(isAlgo){
                             size = rand() % 250 + 50;
                             temp[count] = size;
@@ -272,13 +285,12 @@ int main(int argc, char* argv[]) {
                 }
                 isAlgo = false;
                 
-                for(int x = 0; x < 1000; x++){
-                    if(obs[x].poz_Y > 800){
-                        obs[x] = obstacle(NULL, pozx, pozy + move, size, size, checkCollision);
-                    }
-                    if(checkCollision(rocket_rect, obs[x].about)){
+                for(int x = 0; x < 50; x++){
+                    if(checkCollision(rocket_rect, obs[x].about) && temp != NULL && obs != NULL){
                         free(obs);
+                        free(temp);
                         obs = NULL;
+                        temp = NULL;
                         isAlgo = true;
                         pozy = 0;
                         pozy = -100;
