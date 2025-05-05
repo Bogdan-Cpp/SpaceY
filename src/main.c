@@ -77,10 +77,11 @@ int main(int argc, char* argv[]) {
     float move = -150;
     float poz_X = width / 2;
 
-    bool isEntry = true;
+    bool isEntry = false;
     bool isAlgo = true;
     bool isArray1 = true;
     bool isArray2 = false;
+    bool inDev = true;
 
     if(can != NULL){*can = true;}
 
@@ -237,7 +238,7 @@ int main(int argc, char* argv[]) {
                     obs2 = malloc(50 * sizeof(Obstacole));
                     temp2 = malloc(200 * sizeof(int));
                 }
-
+                //first array
                 if(obs != NULL && temp != NULL && isArray1){
                     for(int i = 0; i < 50; i++){
                         if(isAlgo){
@@ -282,26 +283,106 @@ int main(int argc, char* argv[]) {
                             case 7: obs[i] = obstacle(e1, pozx, pozy + move, size, size, checkCollision); break;
                         }
                     }
+                    isAlgo = false;
+
+                    for(int x = 0; x < 50; x++){
+                        if(checkCollision(rocket_rect, obs[x].about) && temp != NULL && obs != NULL && !inDev){
+                            free(obs);
+                            free(temp);
+                            obs = NULL;
+                            temp = NULL;
+                            isAlgo = true;
+                            pozy = 0;
+                            pozy = -100;
+                            count = 0;
+                            move = -150;
+                            break;
+                        }
+                        if(obs != NULL && temp != NULL && obs[x].texture != NULL){
+                            SDL_RenderCopy(renderer, obs[x].texture, NULL, &obs[x].about);
+                        }
+                        else{printf("Texture is NULL\n");}
+                    }
                 }
-                isAlgo = false;
-                
-                for(int x = 0; x < 50; x++){
-                    if(checkCollision(rocket_rect, obs[x].about) && temp != NULL && obs != NULL){
+
+                //second array
+                /**if(obs2 != NULL && temp2 != NULL && isArray2){
+                    for(int i = 0; i < 50; i++){
+                        if(isAlgo){
+                            size = rand() % 250 + 50;
+                            temp2[count] = size;
+                            count++;
+
+                            rand_obj = rand() % 8;
+                            temp2[count] = rand_obj;
+                            count++;
+    
+                            pozx = rand() % 1000;
+                            temp2[count] = pozx;
+                            count++;
+                            
+                            if(size > 100){
+                                pozy -= 300;
+                            }else{
+                                pozy -= 100;
+                            }
+                            temp2[count] = pozy;
+                            count++;
+                        }else{
+                            size = temp2[count];
+                            count++;
+                            rand_obj = temp2[count];
+                            count++;
+                            pozx = temp2[count];
+                            count++;
+                            pozy = temp2[count];
+                            count++;
+                        }
+                        
+                        switch(rand_obj){
+                            case 0: obs2[i] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 1: obs2[i] = obstacle(nederplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 2: obs2[i] = obstacle(mars, pozx, pozy + move, size, size, checkCollision); break;
+                            case 3: obs2[i] = obstacle(iceplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 4: obs2[i] = obstacle(endplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 5: obs2[i] = obstacle(desertplanet, pozx, pozy + move, size, size, checkCollision); break;
+                            case 6: obs2[i] = obstacle(strangemoon, pozx, pozy + move, size, size, checkCollision); break;
+                            case 7: obs2[i] = obstacle(e1, pozx, pozy + move, size, size, checkCollision); break;
+                        }
+                    }
+                    isAlgo = false;
+
+                    for(int x = 0; x < 50; x++){
+                        if(checkCollision(rocket_rect, obs2[x].about) && temp != NULL && obs2 != NULL && !inDev){
+                            free(obs2);
+                            free(temp2);
+                            obs2 = NULL;
+                            temp2 = NULL;
+                            isAlgo = true;
+                            pozy = 0;
+                            pozy = -100;
+                            count = 0;
+                            move = -150;
+                            break;
+                        }
+                        if(obs2 != NULL && temp2 != NULL && obs2[x].texture != NULL){
+                            SDL_RenderCopy(renderer, obs2[x].texture, NULL, &obs2[x].about);
+                        }
+                        else{printf("Texture is NULL\n");}
+                    }
+                }**/
+
+                if(obs != NULL && temp != NULL && obs[49].poz_Y >= 0){
+                    isArray2 = true;
+                    isAlgo = true;
+
+                    if(obs != NULL && temp != NULL && obs[49].poz_Y >= 800){
                         free(obs);
                         free(temp);
                         obs = NULL;
                         temp = NULL;
-                        isAlgo = true;
-                        pozy = 0;
-                        pozy = -100;
-                        count = 0;
-                        move = -150;
-                        break;
+                        isArray1 = false;
                     }
-                    if(obs[x].texture != NULL){
-                        SDL_RenderCopy(renderer, obs[x].texture, NULL, &obs[x].about);
-                    }
-                    else{printf("Texture is NULL\n");}
                 }
 
                 frameCounter++;
